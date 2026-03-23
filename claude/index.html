@@ -7,567 +7,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
-
-<style>
-/* ── Reset & Base ─────────────────────────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --bg:         #08080a;
-  --bg-1:       #0e0e12;
-  --bg-2:       #141418;
-  --border:     rgba(255,255,255,0.07);
-  --border-hi:  rgba(255,255,255,0.13);
-  --text:       #f0f0f2;
-  --text-2:     #9898a8;
-  --text-3:     #52525e;
-  --accent:     #2563eb;
-  --accent-2:   #7c3aed;
-  --accent-glow: rgba(37,99,235,0.25);
-  --serif:      'DM Serif Display', Georgia, serif;
-  --sans:       'DM Sans', system-ui, sans-serif;
-  --radius:     12px;
-}
-
-/* ── Light theme ─────────────────────────────────────────────────────────── */
-html.light {
-  --bg:         #f8f8fb;
-  --bg-1:       #ffffff;
-  --bg-2:       #f0f0f5;
-  --border:     rgba(0,0,0,0.08);
-  --border-hi:  rgba(0,0,0,0.14);
-  --text:       #0e0e14;
-  --text-2:     #4a4a5e;
-  --text-3:     #9898aa;
-  --accent:     #2563eb;
-  --accent-2:   #7c3aed;
-  --accent-glow: rgba(37,99,235,0.15);
-}
-html.light body { background: var(--bg); }
-html.light nav.scrolled {
-  background: rgba(248,248,251,0.88);
-  border-bottom: 1px solid var(--border);
-}
-html.light .bg-mesh::before {
-  background: radial-gradient(circle, rgba(37,99,235,0.07) 0%, transparent 70%);
-}
-html.light .bg-mesh::after {
-  background: radial-gradient(circle, rgba(124,58,237,0.06) 0%, transparent 70%);
-}
-html.light .hero-badge {
-  background: rgba(37,99,235,0.07);
-  border-color: rgba(37,99,235,0.2);
-  color: #1d4ed8;
-}
-html.light .hero-badge-dot { background: #2563eb; }
-html.light .services-grid { background: var(--border); }
-html.light .service-card { background: var(--bg-1); }
-html.light .service-card:hover { background: var(--bg-2); }
-
-html { scroll-behavior: smooth; }
-
-/* Global theme transition */
-*, *::before, *::after {
-  transition: background-color 220ms ease, border-color 220ms ease, color 220ms ease;
-}
-/* But keep transform/opacity transitions unaffected */
-.btn, .service-card, .component-pill, .reveal, .nav-cta {
-  transition: background-color 220ms ease, border-color 220ms ease,
-              color 220ms ease, transform 160ms ease,
-              box-shadow 160ms ease, opacity 0.65s ease;
-}
-
-/* ── Theme toggle button ─────────────────────────────────────────────────── */
-.theme-toggle {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  background: var(--bg-2);
-  border: 1px solid var(--border-hi);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-2);
-  flex-shrink: 0;
-  transition: background 180ms, border-color 180ms, color 180ms, transform 180ms;
-}
-.theme-toggle:hover {
-  color: var(--text);
-  background: var(--bg-1);
-  transform: scale(1.05);
-}
-
-body {
-  font-family: var(--sans);
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.6;
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-}
-
-a { text-decoration: none; color: inherit; }
-
-/* ── Noise texture overlay ─────────────────────────────────────────────────── */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 999;
-  opacity: 0.4;
-}
-
-/* ── Gradient mesh background ─────────────────────────────────────────────── */
-.bg-mesh {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  overflow: hidden;
-}
-.bg-mesh::before {
-  content: '';
-  position: absolute;
-  width: 800px;
-  height: 800px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(37,99,235,0.12) 0%, transparent 70%);
-  top: -200px;
-  left: -200px;
-  animation: drift1 20s ease-in-out infinite alternate;
-}
-.bg-mesh::after {
-  content: '';
-  position: absolute;
-  width: 600px;
-  height: 600px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(124,58,237,0.1) 0%, transparent 70%);
-  bottom: -100px;
-  right: -100px;
-  animation: drift2 25s ease-in-out infinite alternate;
-}
-
-@keyframes drift1 {
-  from { transform: translate(0, 0) scale(1); }
-  to   { transform: translate(80px, 60px) scale(1.1); }
-}
-@keyframes drift2 {
-  from { transform: translate(0, 0) scale(1); }
-  to   { transform: translate(-60px, -40px) scale(1.15); }
-}
-
-/* ── Layout ────────────────────────────────────────────────────────────────── */
-.container {
-  max-width: 1140px;
-  margin: 0 auto;
-  padding: 0 28px;
-  position: relative;
-  z-index: 1;
-}
-
-/* ── Nav ───────────────────────────────────────────────────────────────────── */
-nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 100;
-  padding: 0 28px;
-  transition: background 300ms, border-color 300ms;
-}
-nav.scrolled {
-  background: rgba(8,8,10,0.88);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border);
-}
-.nav-inner {
-  max-width: 1140px;
-  margin: 0 auto;
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.nav-logo {
-  font-family: var(--serif);
-  font-size: 22px;
-  letter-spacing: -0.02em;
-  color: var(--text);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.nav-logo-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--accent);
-  display: inline-block;
-}
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 32px;
-  list-style: none;
-}
-.nav-links a {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-2);
-  transition: color 180ms;
-  letter-spacing: 0.01em;
-}
-.nav-links a:hover { color: var(--text); }
-.nav-cta {
-  background: var(--accent);
-  color: #fff !important;
-  padding: 8px 18px;
-  border-radius: 8px;
-  font-weight: 600 !important;
-  transition: background 180ms, transform 180ms !important;
-}
-.nav-cta:hover { background: #1d4ed8 !important; transform: translateY(-1px); }
-
-/* ── Hero ──────────────────────────────────────────────────────────────────── */
-.hero {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  padding-top: 64px;
-  position: relative;
-}
-.hero-inner {
-  padding: 100px 0 120px;
-  max-width: 760px;
-}
-.hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(37,99,235,0.1);
-  border: 1px solid rgba(37,99,235,0.25);
-  border-radius: 99px;
-  padding: 5px 14px 5px 8px;
-  font-size: 12px;
-  font-weight: 500;
-  color: #93bbfc;
-  margin-bottom: 28px;
-  animation: fadeUp 0.6s ease both;
-}
-.hero-badge-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: #2563eb;
-  animation: pulse 2s infinite;
-}
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%       { opacity: 0.5; transform: scale(0.8); }
-}
-
-.hero h1 {
-  font-family: var(--serif);
-  font-size: clamp(44px, 7vw, 80px);
-  line-height: 1.08;
-  letter-spacing: -0.03em;
-  margin-bottom: 24px;
-  animation: fadeUp 0.6s 0.1s ease both;
-}
-.hero h1 em {
-  font-style: italic;
-  color: var(--text-2);
-}
-.hero-sub {
-  font-size: 18px;
-  color: var(--text-2);
-  max-width: 540px;
-  line-height: 1.7;
-  margin-bottom: 40px;
-  font-weight: 300;
-  animation: fadeUp 0.6s 0.2s ease both;
-}
-.hero-actions {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  animation: fadeUp 0.6s 0.3s ease both;
-}
-
-/* ── Buttons ───────────────────────────────────────────────────────────────── */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 13px 24px;
-  border-radius: 10px;
-  font-family: var(--sans);
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  transition: transform 160ms, background 160ms, box-shadow 160ms;
-  text-decoration: none;
-}
-.btn:hover { transform: translateY(-2px); }
-.btn-primary {
-  background: var(--accent);
-  color: #fff;
-  box-shadow: 0 4px 20px rgba(37,99,235,0.35);
-}
-.btn-primary:hover {
-  background: #1d4ed8;
-  box-shadow: 0 6px 28px rgba(37,99,235,0.5);
-}
-.btn-ghost {
-  background: transparent;
-  color: var(--text-2);
-  border: 1px solid var(--border-hi);
-}
-.btn-ghost:hover { color: var(--text); background: var(--bg-2); }
-
-/* ── Section titles ─────────────────────────────────────────────────────────── */
-.section-label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 12px;
-}
-.section-title {
-  font-family: var(--serif);
-  font-size: clamp(32px, 4vw, 48px);
-  line-height: 1.15;
-  letter-spacing: -0.02em;
-  margin-bottom: 16px;
-}
-.section-sub {
-  font-size: 16px;
-  color: var(--text-2);
-  max-width: 520px;
-  line-height: 1.7;
-  font-weight: 300;
-}
-
-/* ── Services ──────────────────────────────────────────────────────────────── */
-.services { padding: 120px 0; }
-.services-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1px;
-  background: var(--border);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  margin-top: 64px;
-}
-.service-card {
-  background: var(--bg-1);
-  padding: 36px 32px;
-  position: relative;
-  overflow: hidden;
-  transition: background 220ms;
-}
-.service-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 0% 0%, rgba(37,99,235,0.06), transparent 60%);
-  opacity: 0;
-  transition: opacity 300ms;
-}
-.service-card:hover { background: var(--bg-2); }
-.service-card:hover::before { opacity: 1; }
-.service-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  background: rgba(37,99,235,0.1);
-  border: 1px solid rgba(37,99,235,0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 20px;
-  font-size: 20px;
-}
-.service-card h3 {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 8px;
-  letter-spacing: -0.01em;
-}
-.service-card p {
-  font-size: 14px;
-  color: var(--text-2);
-  line-height: 1.65;
-}
-
-/* ── MTK Components ─────────────────────────────────────────────────────────── */
-.components { padding: 120px 0; }
-.components-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 64px;
-  gap: 40px;
-  flex-wrap: wrap;
-}
-.components-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-}
-@media (max-width: 800px) {
-  .components-grid { grid-template-columns: repeat(2, 1fr); }
-}
-.component-pill {
-  background: var(--bg-1);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 24px 20px;
-  text-align: center;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-2);
-  cursor: pointer;
-  transition: border-color 200ms, color 200ms, background 200ms, transform 200ms;
-  position: relative;
-  overflow: hidden;
-}
-.component-pill::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
-  transform: scaleX(0);
-  transition: transform 200ms;
-}
-.component-pill:hover {
-  border-color: var(--border-hi);
-  color: var(--text);
-  background: var(--bg-2);
-  transform: translateY(-3px);
-}
-.component-pill:hover::after { transform: scaleX(1); }
-
-/* ── CTA strip ──────────────────────────────────────────────────────────────── */
-.cta-strip {
-  padding: 80px 0 120px;
-}
-.cta-box {
-  background: var(--bg-1);
-  border: 1px solid var(--border-hi);
-  border-radius: 20px;
-  padding: 72px 64px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-.cta-box::before {
-  content: '';
-  position: absolute;
-  top: -120px; left: 50%;
-  transform: translateX(-50%);
-  width: 500px;
-  height: 300px;
-  background: radial-gradient(ellipse, rgba(37,99,235,0.15) 0%, transparent 70%);
-  pointer-events: none;
-}
-.cta-box h2 {
-  font-family: var(--serif);
-  font-size: clamp(28px, 4vw, 44px);
-  letter-spacing: -0.02em;
-  margin-bottom: 16px;
-}
-.cta-box p {
-  color: var(--text-2);
-  font-size: 16px;
-  margin-bottom: 36px;
-  font-weight: 300;
-}
-.cta-actions {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-/* ── Footer ─────────────────────────────────────────────────────────────────── */
-footer {
-  border-top: 1px solid var(--border);
-  padding: 36px 28px;
-  position: relative;
-  z-index: 1;
-}
-.footer-inner {
-  max-width: 1140px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-.footer-copy {
-  font-size: 13px;
-  color: var(--text-3);
-}
-.footer-links {
-  display: flex;
-  gap: 24px;
-}
-.footer-links a {
-  font-size: 13px;
-  color: var(--text-3);
-  transition: color 160ms;
-}
-.footer-links a:hover { color: var(--text-2); }
-
-/* ── Scroll reveal ──────────────────────────────────────────────────────────── */
-.reveal {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.65s ease, transform 0.65s ease;
-}
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-.reveal-delay-1 { transition-delay: 0.1s; }
-.reveal-delay-2 { transition-delay: 0.2s; }
-.reveal-delay-3 { transition-delay: 0.3s; }
-.reveal-delay-4 { transition-delay: 0.4s; }
-
-/* ── Animations ─────────────────────────────────────────────────────────────── */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ── Mobile ─────────────────────────────────────────────────────────────────── */
-@media (max-width: 640px) {
-  .nav-links { display: none; }
-  .hero-inner { padding: 80px 0 80px; }
-  .services { padding: 80px 0; }
-  .components { padding: 80px 0; }
-  .cta-box { padding: 48px 28px; }
-  .components-grid { grid-template-columns: repeat(2, 1fr); }
-}
-</style>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <div class="bg-mesh"></div>
 
-<!-- ── Nav ────────────────────────────────────────────────────────────────── -->
 <nav id="mainNav">
   <div class="nav-inner">
-    <a href="#" class="nav-logo">
-      Melify<span class="nav-logo-dot"></span>
-    </a>
+    <a href="#" class="nav-logo">Melify<span class="nav-logo-dot"></span></a>
     <ul class="nav-links">
       <li><a href="#services">Products</a></li>
       <li><a href="#components">Components</a></li>
@@ -584,24 +32,15 @@ footer {
   </div>
 </nav>
 
-<!-- ── Hero ───────────────────────────────────────────────────────────────── -->
 <section class="hero">
   <div class="container">
     <div class="hero-inner">
-      <div class="hero-badge">
-        <span class="hero-badge-dot"></span>
-        Now shipping MTK Component System v2
-      </div>
+      <div class="hero-badge"><span class="hero-badge-dot"></span>Now shipping MTK Component System v2</div>
       <h1>Build Better<br><em>Web Systems</em></h1>
-      <p class="hero-sub">
-        Modern UI components and scalable web platforms designed for performance,
-        flexibility, and real-world applications.
-      </p>
+      <p class="hero-sub">Modern UI components and scalable web platforms designed for performance, flexibility, and real-world applications.</p>
       <div class="hero-actions">
         <a href="#services" class="btn btn-primary">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <polyline points="13 17 18 12 13 7"/><line x1="6" y1="12" x2="18" y2="12"/>
-          </svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 17 18 12 13 7"/><line x1="6" y1="12" x2="18" y2="12"/></svg>
           Get Started
         </a>
         <a href="#components" class="btn btn-ghost">View Components</a>
@@ -610,7 +49,6 @@ footer {
   </div>
 </section>
 
-<!-- ── Services ───────────────────────────────────────────────────────────── -->
 <section class="services" id="services">
   <div class="container">
     <div class="reveal">
@@ -619,31 +57,14 @@ footer {
       <p class="section-sub">Every system we build prioritizes clarity, performance, and long-term maintainability.</p>
     </div>
     <div class="services-grid">
-      <div class="service-card reveal reveal-delay-1">
-        <div class="service-icon">⬡</div>
-        <h3>UI Components</h3>
-        <p>Reusable, accessible components built for modern apps. Consistent design language across every screen.</p>
-      </div>
-      <div class="service-card reveal reveal-delay-2">
-        <div class="service-icon">◈</div>
-        <h3>Web Platforms</h3>
-        <p>Full-stack systems designed for growth and scale. From architecture to deployment, we handle the complexity.</p>
-      </div>
-      <div class="service-card reveal reveal-delay-3">
-        <div class="service-icon">⟳</div>
-        <h3>Automation</h3>
-        <p>Streamline workflows and reduce manual operations. Intelligent pipelines that free your team to focus on what matters.</p>
-      </div>
-      <div class="service-card reveal reveal-delay-4">
-        <div class="service-icon">◎</div>
-        <h3>Performance</h3>
-        <p>Optimized for speed, efficiency, and reliability. Every millisecond counts — we make sure yours are spent well.</p>
-      </div>
+      <div class="service-card reveal reveal-delay-1"><div class="service-icon">⬡</div><h3>UI Components</h3><p>Reusable, accessible components built for modern apps. Consistent design language across every screen.</p></div>
+      <div class="service-card reveal reveal-delay-2"><div class="service-icon">◈</div><h3>Web Platforms</h3><p>Full-stack systems designed for growth and scale. From architecture to deployment, we handle the complexity.</p></div>
+      <div class="service-card reveal reveal-delay-3"><div class="service-icon">⟳</div><h3>Automation</h3><p>Streamline workflows and reduce manual operations. Intelligent pipelines that free your team to focus on what matters.</p></div>
+      <div class="service-card reveal reveal-delay-4"><div class="service-icon">◎</div><h3>Performance</h3><p>Optimized for speed, efficiency, and reliability. Every millisecond counts — we make sure yours are spent well.</p></div>
     </div>
   </div>
 </section>
 
-<!-- ── MTK Components ─────────────────────────────────────────────────────── -->
 <section class="components" id="components">
   <div class="container">
     <div class="components-header">
@@ -651,9 +72,7 @@ footer {
         <div class="section-label">MTK Component System</div>
         <h2 class="section-title">A modern UI library<br><em>rebuilt for flexibility</em></h2>
       </div>
-      <p class="section-sub reveal reveal-delay-1">
-        Inspired by UI5 — redesigned from the ground up with composability, theming, and performance at the core.
-      </p>
+      <p class="section-sub reveal reveal-delay-1">Inspired by UI5 — redesigned from the ground up with composability, theming, and performance at the core.</p>
     </div>
     <div class="components-grid">
       <div class="component-pill reveal reveal-delay-1">Forms</div>
@@ -668,7 +87,6 @@ footer {
   </div>
 </section>
 
-<!-- ── CTA ─────────────────────────────────────────────────────────────────── -->
 <section class="cta-strip" id="contact">
   <div class="container">
     <div class="cta-box reveal">
@@ -676,9 +94,7 @@ footer {
       <p>Join teams using Melify to ship better products in less time.</p>
       <div class="cta-actions">
         <a href="#" class="btn btn-primary">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <polyline points="13 17 18 12 13 7"/><line x1="6" y1="12" x2="18" y2="12"/>
-          </svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 17 18 12 13 7"/><line x1="6" y1="12" x2="18" y2="12"/></svg>
           Get Started
         </a>
         <a href="mailto:hello@melify.com" class="btn btn-ghost">Contact Us</a>
@@ -687,7 +103,6 @@ footer {
   </div>
 </section>
 
-<!-- ── Footer ──────────────────────────────────────────────────────────────── -->
 <footer>
   <div class="footer-inner">
     <span class="footer-copy">© 2026 Melify. All rights reserved.</span>
@@ -699,76 +114,6 @@ footer {
   </div>
 </footer>
 
-<script>
-// ── Theme toggle ───────────────────────────────────────────────────────────
-const html       = document.documentElement;
-const themeBtn   = document.getElementById('themeToggle');
-const themeIcon  = document.getElementById('themeIcon');
-
-const MOON = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
-const SUN  = `<circle cx="12" cy="12" r="5"/>
-  <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
-  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-  <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
-  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>`;
-
-function setTheme(light) {
-  html.classList.toggle('light', light);
-  themeIcon.innerHTML = light ? MOON : SUN;
-  localStorage.setItem('melify-theme', light ? 'light' : 'dark');
-}
-
-// Apply saved preference immediately
-const saved = localStorage.getItem('melify-theme');
-const preferLight = saved ? saved === 'light' : window.matchMedia('(prefers-color-scheme: light)').matches;
-setTheme(preferLight);
-
-themeBtn.addEventListener('click', () => {
-  setTheme(!html.classList.contains('light'));
-});
-
-// ── Nav scroll effect ──────────────────────────────────────────────────────
-const nav = document.getElementById('mainNav');
-window.addEventListener('scroll', () => {
-  nav.classList.toggle('scrolled', window.scrollY > 20);
-}, { passive: true });
-
-// ── Scroll reveal ──────────────────────────────────────────────────────────
-const revealEls = document.querySelectorAll('.reveal');
-const observer  = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-      observer.unobserve(entry.target);
-    }
-  });
-}, { threshold: 0.12 });
-revealEls.forEach(el => observer.observe(el));
-
-// ── Component pill interactions ────────────────────────────────────────────
-document.querySelectorAll('.component-pill').forEach(pill => {
-  pill.addEventListener('click', () => {
-    pill.style.background = 'rgba(37,99,235,0.12)';
-    pill.style.borderColor = 'rgba(37,99,235,0.4)';
-    pill.style.color = '#93bbfc';
-    setTimeout(() => {
-      pill.style.background = '';
-      pill.style.borderColor = '';
-      pill.style.color = '';
-    }, 600);
-  });
-});
-
-// ── Smooth scroll for anchor links ────────────────────────────────────────
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-  a.addEventListener('click', e => {
-    const target = document.querySelector(a.getAttribute('href'));
-    if (target) {
-      e.preventDefault();
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  });
-});
-</script>
+<script src="app.js"></script>
 </body>
 </html>
